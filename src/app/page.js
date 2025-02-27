@@ -1834,7 +1834,7 @@ export default function SmartPatchSimulator() {
                           <Alert className="bg-blue-50 border-blue-200">
                             <AlertTitle>No Simulation Results</AlertTitle>
                             <AlertDescription>
-                              Run the simulation first to enable specific actions on vulnerabilities. Go to the Manual Configuration tab and click "Calculate Patch Priority".
+                              Run the simulation first to enable specific actions on vulnerabilities. Go to the Manual Configuration tab and click Calculate Patch Priority.
                             </AlertDescription>
                           </Alert>
                         </div>
