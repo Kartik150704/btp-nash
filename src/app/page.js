@@ -2111,7 +2111,7 @@ export default function SmartPatchSimulator() {
                     <AlertTitle className="text-lg font-medium text-slate-800">No Results Yet</AlertTitle>
                   </div>
                   <AlertDescription className="mt-2 text-slate-600">
-                    Configure your system and vulnerabilities above, then click "Calculate Patch Priority" to generate simulation results.
+                    Configure your system and vulnerabilities above, then click Calculate Patch Priority to generate simulation results.
                     {selectedNvdVulnerabilities.length > 0 && (
                       <div className="mt-2">
                         <Badge className="bg-blue-100 text-blue-800">
