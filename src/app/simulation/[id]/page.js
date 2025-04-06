@@ -1,3 +1,4 @@
+
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation'; // For App Router
@@ -401,7 +402,7 @@ const SimulationTabs = () => {
             <AlertCircle className="h-5 w-5 text-red-600" />
             <AlertTitle className="text-red-800 font-medium">Access Denied</AlertTitle>
             <AlertDescription className="text-red-700 mt-1">
-              You don't have permission to access this simulation.
+              You do not have permission to access this simulation.
               <Button 
                 variant="outline" 
                 size="sm" 

@@ -1,3 +1,4 @@
+
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -234,7 +235,7 @@ const SimulationTabs = () => {
             <AlertCircle className="h-4 w-4 text-red-600" />
             <AlertTitle className="text-red-600">Access Denied</AlertTitle>
             <AlertDescription>
-              You don't have permission to access this simulation.
+              You do not have permission to access this simulation.
               <Button variant="outline" size="sm" className="mt-2">
                 Request Access from Owner
               </Button>
