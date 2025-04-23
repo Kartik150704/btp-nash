@@ -25,7 +25,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Search, Info, AlertTriangle, Shield, Database } from 'lucide-react';
 import { Progress } from "@/components/ui/progress.jsx"
-
+import { calculateNashEquilibrium, interpretNashEquilibriumStrategies } from '../utils/nash.jsx'
 // NVD API service
 const NVD_API_BASE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0";
 
@@ -283,7 +283,8 @@ export default function SmartPatchSimulator() {
 
   const [cveDetailsOpen, setCveDetailsOpen] = useState(false)
   const [currentCveDetails, setCurrentCveDetails] = useState(null)
-
+  const [nashResult, setNashResult] = useState(null)
+  const [interpretedNash, setInterpretedNash] = useState(null)
   // Load a preset configuration
   const loadPresetConfiguration = (configId) => {
     if (presetConfigurations[configId]) {
@@ -508,7 +509,7 @@ export default function SmartPatchSimulator() {
     setIsSimulating(true)
 
     // Add a small delay to show loading state
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+   
 
     const rAdjArray = computeRiskScores(functionalMatrix, topologyMatrix, numSubsystems, w1, w2)
     setRiskScores(rAdjArray)
@@ -518,6 +519,14 @@ export default function SmartPatchSimulator() {
 
     const patchOrder = prioritizePatches(vDetails)
     setPatchPriority(patchOrder)
+
+    // Calculate Nash equilibrium
+    const nash = calculateNashEquilibrium(vDetails, players)
+    console.log(nash)
+    setNashResult(nash)
+
+    const interpreted = interpretNashEquilibriumStrategies(nash, vDetails)
+    setInterpretedNash(interpreted)
 
     setIsSimulating(false)
     setHasResults(true)
@@ -1851,7 +1860,137 @@ export default function SmartPatchSimulator() {
 
             <div>
               <h2 className="text-xl font-semibold mb-4">Simulation Results</h2>
+              {/* Nash Equilibrium Results */}
+              {/* Nash Equilibrium Results */}
+              {hasResults && nashResult && nashResult.hasNash && (
+                <Card className="shadow-sm lg:col-span-3">
+                  <CardHeader className="pb-2 bg-indigo-50">
+                    <CardTitle className="text-lg font-medium">
+                      Nash Equilibrium Analysis
+                    </CardTitle>
+                    <CardDescription>
+                      Optimal strategies for defenders and attackers based on game theory
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-6">
+                      {/* Pure Strategy Equilibria */}
+                      {interpretedNash?.pureStrategies?.length > 0 && (
+                        <div>
+                          <h3 className="text-md font-medium mb-3">Pure Strategy Nash Equilibria</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {interpretedNash.pureStrategies.map((eq, index) => (
+                              <div key={index} className="p-3 bg-indigo-50 border border-indigo-200 rounded">
+                                <div className="font-medium">Equilibrium {index + 1}</div>
+                                <div className="mt-2">
+                                  <div className="text-sm font-medium text-blue-700">Defender Actions:</div>
+                                  <div className="text-sm ml-2">
+                                    {eq.defenderActions.length > 0
+                                      ? eq.defenderActions.join(', ')
+                                      : "Do not patch any subsystem"}
+                                  </div>
 
+                                  <div className="text-sm font-medium text-red-700 mt-2">Attacker Actions:</div>
+                                  <div className="text-sm ml-2">
+                                    {eq.attackerActions.length > 0
+                                      ? eq.attackerActions.join(', ')
+                                      : "Do not exploit any subsystem"}
+                                  </div>
+
+                                  <div className="flex justify-between mt-2 pt-2 border-t border-indigo-200">
+                                    <div className="text-sm">
+                                      <span className="font-medium">Defender payoff:</span> {eq.defenderPayoff.toFixed(2)}
+                                    </div>
+                                    <div className="text-sm">
+                                      <span className="font-medium">Attacker payoff:</span> {eq.attackerPayoff.toFixed(2)}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Mixed Strategy Equilibrium */}
+                      {interpretedNash?.mixedStrategy && (
+                        <div>
+                          <h3 className="text-md font-medium mb-3">
+                            <div className="flex items-center">
+                              <span>Approximated Mixed Strategy Nash Equilibrium</span>
+                              <Badge className="ml-2 bg-purple-100 text-purple-800">Replicator Dynamics</Badge>
+                            </div>
+                          </h3>
+
+                          <div className="p-3 mb-4 bg-purple-50 border border-purple-200 rounded">
+                            <div className="text-sm">
+                              This mixed strategy equilibrium is approximated using replicator dynamics with 100 iterations.
+                              The algorithm simulates how strategies evolve over time based on their relative success.
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                              <div className="font-medium text-blue-800 mb-2">Defender Mixed Strategy</div>
+                              {interpretedNash.mixedStrategy.defenderStrategyDistribution.map((strat, idx) => (
+                                <div key={idx} className="flex justify-between mb-1 text-sm">
+                                  <span>{strat.strategy}</span>
+                                  <span className="font-medium">{(strat.probability * 100).toFixed(1)}%</span>
+                                </div>
+                              ))}
+                              <div className="mt-2 pt-2 border-t border-blue-200 text-sm">
+                                <span className="font-medium">Expected payoff:</span> {interpretedNash.mixedStrategy.defenderPayoff.toFixed(2)}
+                              </div>
+                            </div>
+
+                            <div className="p-3 bg-red-50 border border-red-200 rounded">
+                              <div className="font-medium text-red-800 mb-2">Attacker Mixed Strategy</div>
+                              {interpretedNash.mixedStrategy.attackerStrategyDistribution.map((strat, idx) => (
+                                <div key={idx} className="flex justify-between mb-1 text-sm">
+                                  <span>{strat.strategy}</span>
+                                  <span className="font-medium">{(strat.probability * 100).toFixed(1)}%</span>
+                                </div>
+                              ))}
+                              <div className="mt-2 pt-2 border-t border-red-200 text-sm">
+                                <span className="font-medium">Expected payoff:</span> {interpretedNash.mixedStrategy.attackerPayoff.toFixed(2)}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded">
+                            <h4 className="text-sm font-medium mb-2">Equilibrium Properties</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="text-sm">
+                                <span className="font-medium">Defender expected utility:</span> {interpretedNash.mixedStrategy.defenderPayoff.toFixed(2)}
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Attacker expected utility:</span> {interpretedNash.mixedStrategy.attackerPayoff.toFixed(2)}
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Nash equilibrium type:</span> Approximated mixed strategy
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Approximation method:</span> Replicator dynamics
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {(!interpretedNash?.pureStrategies?.length && !interpretedNash?.mixedStrategy) && (
+                        <Alert className="bg-yellow-50 border-yellow-200">
+                          <AlertTriangle className="h-4 w-4 mr-2" />
+                          <AlertTitle>No Nash Equilibrium Found</AlertTitle>
+                          <AlertDescription>
+                            The current game configuration doesn't have a clear equilibrium strategy.
+                            This might be due to the specific payoff structure or limited player options.
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
               {hasResults ? (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Risk Scores */}
