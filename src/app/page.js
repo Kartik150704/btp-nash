@@ -1924,7 +1924,7 @@ export default function SmartPatchSimulator() {
 
                           <div className="p-3 mb-4 bg-purple-50 border border-purple-200 rounded">
                             <div className="text-sm">
-                              This mixed strategy equilibrium is approximated using replicator dynamics with 100 iterations.
+                              This mixed strategy equilibrium is approximated using replicator dynamics with 10000 iterations.
                               The algorithm simulates how strategies evolve over time based on their relative success.
                             </div>
                           </div>
@@ -1982,7 +1982,7 @@ export default function SmartPatchSimulator() {
                           <AlertTriangle className="h-4 w-4 mr-2" />
                           <AlertTitle>No Nash Equilibrium Found</AlertTitle>
                           <AlertDescription>
-                            The current game configuration doesn't have a clear equilibrium strategy.
+                            The current game configuration doesnot have a clear equilibrium strategy.
                             This might be due to the specific payoff structure or limited player options.
                           </AlertDescription>
                         </Alert>
