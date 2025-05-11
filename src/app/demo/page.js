@@ -1324,7 +1324,7 @@ export default function MinimalistNashSimulator() {
                   </p>
                   <div className="bg-gray-100 p-4">
                     <div className="font-mono text-sm text-center">
-                      ∀i: u<sub>i</sub>(s'<sub>i</sub>, s'<sub>-i</sub>) + ε ≥ u<sub>i</sub>(s<sub>i</sub>, s'<sub>-i</sub>) ∀ s<sub>i</sub>
+                      ∀i: u<sub>i</sub>(s{"'"}<sub>i</sub>, s{"'"}<sub>-i</sub>) + ε ≥ u<sub>i</sub>(s<sub>i</sub>, s'<sub>-i</sub>) ∀ s<sub>i</sub>
                     </div>
                   </div>
                 </div>
@@ -1342,8 +1342,8 @@ export default function MinimalistNashSimulator() {
                   <tbody>
                     <tr className="bg-gray-50">
                       <td className="px-6 py-4 text-sm text-black">Time Complexity</td>
-                      <td className="px-6 py-4 text-sm text-center text-black">O(2<sup>n×m</sup>)</td>
-                      <td className="px-6 py-4 text-sm text-center text-black">O(k×n<sup>m</sup>×m)</td>
+                      <td className="px-6 py-4 text-sm text-center text-black">O(2<sup>nxm</sup>)</td>
+                      <td className="px-6 py-4 text-sm text-center text-black">O(kxn<sup>m</sup>xm)</td>
                     </tr>
                     <tr>
                       <td className="px-6 py-4 text-sm text-black">Solution Quality</td>
