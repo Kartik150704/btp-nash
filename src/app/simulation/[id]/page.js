@@ -176,7 +176,7 @@ const SimulationTabs = () => {
   // const { id: simulationId } = router.query;
   
   const [isMounted, setIsMounted] = useState(false);
-  const [simulationName, setSimulationName] = useState('Weather Prediction Model');
+  const [simulationName, setSimulationName] = useState('Nash Simulator');
   
   // State variables
   const [permissionStatus, setPermissionStatus] = useState('checking');
